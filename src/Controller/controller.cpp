@@ -88,3 +88,11 @@ void Controller::RemoveAdjacentPoints(std::vector<QPointF>* points) {
     }
   }
 }
+
+Polygon Controller::CreateLightArea() const {
+  std::vector<QPointF> result = IntersectRays(CastRays());
+
+  RemoveAdjacentPoints(&result);
+
+  return Polygon(result);
+}

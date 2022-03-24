@@ -18,6 +18,8 @@ class Controller {
   void AddVertexToLastPolygon(const QPointF& vertex);
   void UpdateLastPolygon(const QPointF& vertex);
 
+  Polygon CreateLightArea() const;
+
  private:
   std::vector<Ray> CastRays() const;
   std::vector<QPointF> IntersectRays(const std::vector<Ray>& rays) const;
