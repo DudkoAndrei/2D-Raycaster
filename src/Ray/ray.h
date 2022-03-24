@@ -11,12 +11,10 @@ class Ray {
 
   const QPointF& Begin() const;
   const QPointF& Direction() const;
-  QPointF End() const;
   double Angle() const;
 
   void SetBegin(const QPointF& point);
   void SetDirection(const QPointF& point);
-  void SetEnd(const QPointF& point);
   void SetAngle(double angle);
 
   Ray Rotate(double angle) const;

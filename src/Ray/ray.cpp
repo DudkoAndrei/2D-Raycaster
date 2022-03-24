@@ -38,10 +38,6 @@ const QPointF& Ray::Direction() const {
   return direction_;
 }
 
-QPointF Ray::End() const {
-  return begin_ + direction_;
-}
-
 double Ray::Angle() const {
   return angle_;
 }
@@ -53,11 +49,6 @@ void Ray::SetBegin(const QPointF& point) {
 void Ray::SetDirection(const QPointF& point) {
   direction_ = point;
   angle_ = GetAngle(point);
-}
-
-void Ray::SetEnd(const QPointF& point) {
-  direction_ = point - begin_;
-  angle_ = GetAngle(direction_);
 }
 
 void Ray::SetAngle(double angle) {
