@@ -20,7 +20,7 @@ double Ray::GetAngle(const QPointF& point) {
       angle = -std::numbers::pi / 2.0;
     }
   } else {
-    angle = std::atan(point.y() / point.x());
+    angle = std::atan2(point.y(), point.x());
   }
 
   if (angle < 0) {
