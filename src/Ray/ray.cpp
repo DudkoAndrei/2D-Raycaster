@@ -65,3 +65,17 @@ void Ray::SetAngle(double angle) {
       direction_.x() * direction_.x() + direction_.y() * direction_.y());
   direction_ = QPointF(std::cos(angle_), std::sin(angle_)) * length;
 }
+
+Ray Ray::Rotate(double angle) const {
+  Ray result = *this;
+
+  double sin = std::sin(angle);
+  double cos = std::cos(angle);
+
+  result.SetDirection({cos * result.direction_.x()
+                           - sin * result.direction_.y(),
+                       sin * result.direction_.x()
+                           + cos * result.direction_.y()});
+
+  return result;
+}

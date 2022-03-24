@@ -17,6 +17,8 @@ class Ray {
   void SetEnd(const QPointF& point);
   void SetAngle(double angle);
 
+  Ray Rotate(double angle) const;
+
  private:
   static double GetAngle(const QPointF& point);
 
