@@ -13,6 +13,7 @@ class Polygon {
   explicit Polygon(std::vector<QPointF> vertices);
 
   const QPointF& operator[](size_t idx) const;
+  const std::vector<QPointF>& Vertices() const;
 
   size_t Size() const;
 
