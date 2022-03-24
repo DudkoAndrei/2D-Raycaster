@@ -14,6 +14,7 @@ find_package(Qt6 COMPONENTS
 
 add_executable(Raycaster
         main.cpp
+        src/Controller/controller.cpp
         src/Polygon/polygon.cpp
         src/Ray/ray.cpp)
 
