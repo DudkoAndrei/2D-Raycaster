@@ -4,11 +4,12 @@
 #include <numbers>
 
 Ray::Ray(const QPointF& begin, const QPointF& end)
-    : begin_(begin), direction_(end - begin), angle_(GetAngle(direction_)) {}
+    : angle_(GetAngle(end - begin)),
+      begin_(begin),
+      direction_(GetDirection(angle_)) {}
 
 Ray::Ray(const QPointF& begin, double angle)
-    : begin_(begin), angle_(angle),
-      direction_(std::cos(angle), std::sin(angle)) {}
+    : angle_(angle), begin_(begin), direction_(GetDirection(angle)) {}
 
 double Ray::GetAngle(const QPointF& point) {
   double angle;
@@ -38,10 +39,6 @@ const QPointF& Ray::Direction() const {
   return direction_;
 }
 
-QPointF Ray::End() const {
-  return begin_ + direction_;
-}
-
 double Ray::Angle() const {
   return angle_;
 }
@@ -51,36 +48,23 @@ void Ray::SetBegin(const QPointF& point) {
 }
 
 void Ray::SetDirection(const QPointF& point) {
-  direction_ = point;
   angle_ = GetAngle(point);
-}
-
-void Ray::SetEnd(const QPointF& point) {
-  direction_ = point - begin_;
-  angle_ = GetAngle(direction_);
+  direction_ = GetDirection(angle_);
 }
 
 void Ray::SetAngle(double angle) {
   angle_ = angle;
-  double length = std::sqrt(
-      direction_.x() * direction_.x() + direction_.y() * direction_.y());
-  direction_ = QPointF(std::cos(angle_), std::sin(angle_)) * length;
+  direction_ = GetDirection(angle_);
 }
 
 Ray Ray::Rotate(double angle) const {
-  Ray result = *this;
-
-  double sin = std::sin(angle);
-  double cos = std::cos(angle);
-
-  result.SetDirection({cos * result.direction_.x()
-                           - sin * result.direction_.y(),
-                       sin * result.direction_.x()
-                           + cos * result.direction_.y()});
-
-  return result;
+  return {begin_, GetDirection(angle_ + angle)};
 }
 
 auto Ray::operator<=>(const Ray& rhs) const {
   return angle_ <=> rhs.angle_;
+}
+
+QPointF Ray::GetDirection(double angle) {
+  return {std::cos(angle), std::sin(angle)};
 }
