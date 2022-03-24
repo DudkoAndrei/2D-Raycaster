@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "../Polygon/polygon.h"
+#include "../Ray/ray.h"
 
 class Controller {
  public:
@@ -18,6 +19,9 @@ class Controller {
   void UpdateLastPolygon(const QPointF& vertex);
 
  private:
+  std::vector<Ray> CastRays() const;
+
+
   std::vector<Polygon> polygons_;
   QPointF light_source_;
 };

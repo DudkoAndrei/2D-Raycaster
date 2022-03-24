@@ -1,5 +1,6 @@
 #include "controller.h"
 
+#include <algorithm>
 #include <utility>
 
 const std::vector<Polygon>& Controller::Polygons() const {
@@ -24,4 +25,20 @@ void Controller::AddVertexToLastPolygon(const QPointF& vertex) {
 
 void Controller::UpdateLastPolygon(const QPointF& vertex) {
   polygons_.back().UpdateLastVertex(vertex);
+}
+
+std::vector<Ray> Controller::CastRays() const {
+  std::vector<Ray> result;
+
+  for (const auto& polygon : polygons_) {
+    for (size_t i = 0; i < polygon.Size(); ++i) {
+      result.emplace_back(light_source_, polygon[i]);
+      result.push_back(result.back().Rotate(0.0001));
+      result.push_back(result.back().Rotate(-0.0002));
+    }
+  }
+
+  std::sort(result.begin(), result.end());
+
+  return result;
 }
