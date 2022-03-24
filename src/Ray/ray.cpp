@@ -1,6 +1,7 @@
 #include "ray.h"
 
 #include <cmath>
+#include <numbers>
 
 Ray::Ray(const QPointF& begin, const QPointF& end)
     : begin_(begin), direction_(end - begin), angle_(GetAngle(direction_)) {}
@@ -14,16 +15,16 @@ double Ray::GetAngle(const QPointF& point) {
 
   if (point.x() == 0) {
     if (point.y() > 0) {
-      angle = std::asin(1);
+      angle = std::numbers::pi / 2.0;
     } else {
-      angle = std::asin(-1);
+      angle = -std::numbers::pi / 2.0;
     }
   } else {
     angle = std::atan(point.y() / point.x());
   }
 
   if (angle < 0) {
-    angle += 2.0 * std::acos(-1);
+    angle += 2.0 * std::numbers::pi;
   }
 
   return angle;
