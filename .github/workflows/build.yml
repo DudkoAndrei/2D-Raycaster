@@ -31,9 +31,9 @@ jobs:
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
           aqtversion: '==2.0.6'
           install-deps: false
-      - run: sudo apt-get update && sudo apt-get install libx11-xcb-dev libglu1-mesa-dev
-        name: Install dependencies
-      - run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      - run: sudo apt-get update && sudo apt-get install libx11-xcb-dev libglu1-mesa-dev g++-11
+        name: Install dependencies & g++-11
+      - run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=g++-11
         name: Configure CMake
       - run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j2
         name: Build project
