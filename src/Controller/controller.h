@@ -13,6 +13,10 @@ class Controller {
   const QPointF& LightSource() const;
   void SetLightSource(const QPointF& light_source);
 
+  void AddPolygon(Polygon polygon);
+  void AddVertexToLastPolygon(const QPointF& vertex);
+  void UpdateLastPolygon(const QPointF& vertex);
+
  private:
   std::vector<Polygon> polygons_;
   QPointF light_source_;
