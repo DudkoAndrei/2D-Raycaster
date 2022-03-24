@@ -1,0 +1,39 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '*'
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - uses: actions/checkout@v2.4.0
+        name: Checkout
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: ../Qt
+          key: ${{ runner.os }}-QtCache
+      - uses: jurplel/install-qt-action@v2
+        name: Install Qt
+        with:
+          version: '6.2.3'
+          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          aqtversion: '==2.0.6'
+          install-deps: false
+      - run: sudo apt-get update && sudo apt-get install libx11-xcb-dev libglu1-mesa-dev
+        name: Install dependencies
+      - run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        name: Configure CMake
+      - run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j2
+        name: Build project
