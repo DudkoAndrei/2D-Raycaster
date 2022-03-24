@@ -78,3 +78,13 @@ double Controller::GetLineLength(const QPointF& a, const QPointF& b) {
   return std::sqrt(
       (a.x() - b.x()) * (a.x() - b.x()) + (a.x() - b.x()) * (a.x() - b.x()));
 }
+
+void Controller::RemoveAdjacentPoints(std::vector<QPointF>* points) {
+  for (size_t i = points->size() - 1; i > 0; --i) {
+    if (GetLineLength(points->operator[](i), points->operator[](i - 1))
+        < 1e-6) {
+      points->pop_back();
+      --i;
+    }
+  }
+}

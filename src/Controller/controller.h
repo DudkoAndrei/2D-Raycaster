@@ -21,6 +21,7 @@ class Controller {
  private:
   std::vector<Ray> CastRays() const;
   std::vector<QPointF> IntersectRays(const std::vector<Ray>& rays) const;
+  static void RemoveAdjacentPoints(std::vector<QPointF>* points);
 
   static double GetLineLength(const QPointF& a, const QPointF& b);
 
