@@ -19,7 +19,7 @@ class Ray {
 
   Ray Rotate(double angle) const;
 
-  auto operator<=>(const Ray& rhs) const;
+  std::partial_ordering operator<=>(const Ray& rhs) const;
 
  private:
   static double GetAngle(const QPointF& point);

@@ -61,7 +61,7 @@ Ray Ray::Rotate(double angle) const {
   return {begin_, GetDirection(angle_ + angle)};
 }
 
-auto Ray::operator<=>(const Ray& rhs) const {
+std::partial_ordering Ray::operator<=>(const Ray& rhs) const {
   return angle_ <=> rhs.angle_;
 }
 
