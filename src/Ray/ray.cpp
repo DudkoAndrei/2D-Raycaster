@@ -4,11 +4,12 @@
 #include <numbers>
 
 Ray::Ray(const QPointF& begin, const QPointF& end)
-    : begin_(begin), direction_(end - begin), angle_(GetAngle(direction_)) {}
+    : angle_(GetAngle(end - begin)),
+      begin_(begin),
+      direction_(GetDirection(angle_)) {}
 
 Ray::Ray(const QPointF& begin, double angle)
-    : begin_(begin), angle_(angle),
-      direction_(std::cos(angle), std::sin(angle)) {}
+    : angle_(angle), begin_(begin), direction_(GetDirection(angle)) {}
 
 double Ray::GetAngle(const QPointF& point) {
   double angle;

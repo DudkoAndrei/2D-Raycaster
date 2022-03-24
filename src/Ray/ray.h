@@ -25,7 +25,7 @@ class Ray {
   static double GetAngle(const QPointF& point);
   static QPointF GetDirection(double angle);
 
+  double angle_{0};
   QPointF begin_{0, 0};
   QPointF direction_{0, 0};
-  double angle_{0};
 };
