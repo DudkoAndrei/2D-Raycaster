@@ -75,3 +75,7 @@ Ray Ray::Rotate(double angle) const {
 auto Ray::operator<=>(const Ray& rhs) const {
   return angle_ <=> rhs.angle_;
 }
+
+QPointF Ray::GetDirection(double angle) {
+  return {std::cos(angle), std::sin(angle)};
+}
