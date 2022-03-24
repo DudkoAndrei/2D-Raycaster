@@ -28,3 +28,19 @@ double Ray::GetAngle(const QPointF& point) {
 
   return angle;
 }
+
+const QPointF& Ray::Begin() const {
+  return begin_;
+}
+
+const QPointF& Ray::Direction() const {
+  return direction_;
+}
+
+QPointF Ray::End() const {
+  return begin_ + direction_;
+}
+
+double Ray::Angle() const {
+  return angle_;
+}
