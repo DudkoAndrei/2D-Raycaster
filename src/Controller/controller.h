@@ -20,7 +20,9 @@ class Controller {
 
  private:
   std::vector<Ray> CastRays() const;
+  std::vector<QPointF> IntersectRays(const std::vector<Ray>& rays) const;
 
+  static double GetLineLength(const QPointF& a, const QPointF& b);
 
   std::vector<Polygon> polygons_;
   QPointF light_source_;

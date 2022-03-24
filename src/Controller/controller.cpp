@@ -1,6 +1,7 @@
 #include "controller.h"
 
 #include <algorithm>
+#include <cmath>
 #include <utility>
 
 const std::vector<Polygon>& Controller::Polygons() const {
@@ -41,4 +42,39 @@ std::vector<Ray> Controller::CastRays() const {
   std::sort(result.begin(), result.end());
 
   return result;
+}
+
+std::vector<QPointF> Controller::IntersectRays(
+    const std::vector<Ray>& rays) const {
+  std::vector<QPointF> result;
+
+  for (const auto& ray : rays) {
+    std::optional<QPointF> temp_point;
+    std::optional<double> temp_point_length;
+
+    for (const auto& polygon : polygons_) {
+      auto temp = polygon.IntersectRay(ray);
+      std::optional<double> length;
+
+      if (temp.has_value()) {
+        length = GetLineLength(light_source_, temp.value());
+
+        if (!temp_point.has_value() || length < temp_point_length) {
+          temp_point = temp;
+          temp_point_length = length;
+        }
+      }
+    }
+
+    if (temp_point.has_value()) {
+      result.push_back(temp_point.value());
+    }
+  }
+
+  return result;
+}
+
+double Controller::GetLineLength(const QPointF& a, const QPointF& b) {
+  return std::sqrt(
+      (a.x() - b.x()) * (a.x() - b.x()) + (a.x() - b.x()) * (a.x() - b.x()));
 }
