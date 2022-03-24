@@ -18,3 +18,11 @@ const QPointF& Polygon::operator[](size_t idx) const {
 size_t Polygon::Size() const {
   return vertices_.size();
 }
+
+void Polygon::AddVertex(const QPointF& vertex) {
+  vertices_.push_back(vertex);
+}
+
+void Polygon::UpdateLastVertex(const QPointF& vertex) {
+  vertices_.back() = vertex;
+}

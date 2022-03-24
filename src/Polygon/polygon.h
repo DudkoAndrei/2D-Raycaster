@@ -12,6 +12,9 @@ class Polygon {
 
   size_t Size() const;
 
+  void AddVertex(const QPointF& vertex);
+  void UpdateLastVertex(const QPointF& vertex);
+
  private:
   std::vector<QPointF>  vertices_;
 };
