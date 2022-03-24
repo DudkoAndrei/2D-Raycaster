@@ -27,5 +27,5 @@ class Ray {
 
   double angle_{0};
   QPointF begin_{0, 0};
-  QPointF direction_{0, 0};
+  QPointF direction_{1, 0};
 };
