@@ -13,6 +13,10 @@ const QPointF& Polygon::operator[](size_t idx) const {
   return vertices_[idx];
 }
 
+const std::vector<QPointF>& Polygon::Vertices() const {
+  return vertices_;
+}
+
 size_t Polygon::Size() const {
   return vertices_.size();
 }
