@@ -12,6 +12,11 @@ class Ray {
   QPointF End() const;
   double Angle() const;
 
+  void SetBegin(const QPointF& point);
+  void SetDirection(const QPointF& point);
+  void SetEnd(const QPointF& point);
+  void SetAngle(double angle);
+
  private:
   static double GetAngle(const QPointF& point);
 

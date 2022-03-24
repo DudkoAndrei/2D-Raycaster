@@ -44,3 +44,24 @@ QPointF Ray::End() const {
 double Ray::Angle() const {
   return angle_;
 }
+
+void Ray::SetBegin(const QPointF& point) {
+  begin_ = point;
+}
+
+void Ray::SetDirection(const QPointF& point) {
+  direction_ = point;
+  angle_ = GetAngle(point);
+}
+
+void Ray::SetEnd(const QPointF& point) {
+  direction_ = point - begin_;
+  angle_ = GetAngle(direction_);
+}
+
+void Ray::SetAngle(double angle) {
+  angle_ = angle;
+  double length = std::sqrt(
+      direction_.x() * direction_.x() + direction_.y() * direction_.y());
+  direction_ = QPointF(std::cos(angle_), std::sin(angle_)) * length;
+}
