@@ -13,7 +13,8 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 add_executable(Raycaster
-        main.cpp)
+        main.cpp
+        src/Ray/ray.cpp)
 
 target_link_libraries(Raycaster
         Qt::Core
