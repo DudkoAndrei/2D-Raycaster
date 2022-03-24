@@ -80,3 +80,7 @@ Ray Ray::Rotate(double angle) const {
 
   return result;
 }
+
+auto Ray::operator<=>(const Ray& rhs) const {
+  return angle_ <=> rhs.angle_;
+}

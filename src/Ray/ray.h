@@ -1,6 +1,8 @@
 #pragma once
 
+#include <compare>
 #include <QPointF>
+
 class Ray {
  public:
   Ray() = default;
@@ -18,6 +20,8 @@ class Ray {
   void SetAngle(double angle);
 
   Ray Rotate(double angle) const;
+
+  auto operator<=>(const Ray& rhs) const;
 
  private:
   static double GetAngle(const QPointF& point);
