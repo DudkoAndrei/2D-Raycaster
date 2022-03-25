@@ -80,11 +80,10 @@ double Controller::GetLineLength(const QPointF& a, const QPointF& b) {
 }
 
 void Controller::RemoveAdjacentPoints(std::vector<QPointF>* points) {
-  for (size_t i = points->size() - 1; i > 0; --i) {
+  for (int i = points->size() - 1; i > 0; --i) {
     if (GetLineLength(points->operator[](i), points->operator[](i - 1))
-        < 1e-6) {
+        < 1e-9) {
       points->pop_back();
-      --i;
     }
   }
 }
