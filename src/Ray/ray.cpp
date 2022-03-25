@@ -9,7 +9,14 @@ Ray::Ray(const QPointF& begin, const QPointF& end)
       direction_(GetDirection(angle_)) {}
 
 Ray::Ray(const QPointF& begin, double angle)
-    : angle_(angle), begin_(begin), direction_(GetDirection(angle)) {}
+    : angle_(angle), begin_(begin), direction_(GetDirection(angle)) {
+  while (angle_ < 0) {
+    angle += 2.0 * std::numbers::pi;
+  }
+  while (angle >= 2.0 * std::numbers::pi) {
+    angle -= 2.0 * std::numbers::pi;
+  }
+}
 
 double Ray::GetAngle(const QPointF& point) {
   double angle;
@@ -58,7 +65,7 @@ void Ray::SetAngle(double angle) {
 }
 
 Ray Ray::Rotate(double angle) const {
-  return {begin_, GetDirection(angle_ + angle)};
+  return {begin_, angle_ + angle};
 }
 
 std::partial_ordering Ray::operator<=>(const Ray& rhs) const {

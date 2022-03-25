@@ -67,11 +67,13 @@ std::optional<std::pair<QPointF, double>> Polygon::GetIntersection(
       (line_begin.x() + line_direction.x() * t2 - ray.Begin().x())
           / ray.Direction().x();
 
-  if (t1 > 0 && 0 < t2 && t2 < 1) {
-    return std::make_pair(ray.Begin() + ray.Direction() * t1, t1);
+  double kEps = 1e-9;
+
+  if (t1 < -kEps || t2 < -kEps || t2 > 1.0 + kEps) {
+    return std::nullopt;
   }
 
-  return std::nullopt;
+  return std::make_pair(ray.Begin() + ray.Direction() * t1, t1);
 }
 
 bool Polygon::IsParallel(const QPointF& first_direction,
