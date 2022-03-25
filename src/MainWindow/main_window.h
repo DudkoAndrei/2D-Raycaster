@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow {
   PaintWidget* paint_widget_;
 
   std::vector<QPointF> points_;
-  Polygon light_area_;
+  std::vector<Polygon> light_areas_;
 
   Controller controller_;
 };

@@ -59,7 +59,7 @@ void MainWindow::ConnectWidgets() {
   connect(paint_widget_, &PaintWidget::MouseMoved, [&](const QPointF& point) {
     if (mode_ == Mode::kLight) {
       controller_.SetLightSource(point);
-      light_area_ = controller_.CreateLightArea();
+      light_areas_ = controller_.CreateLightAreas();
 
       repaint();
     }
@@ -72,7 +72,7 @@ void MainWindow::paintEvent(QPaintEvent* event) {
   paint_widget_->Paint(
       &painter,
       controller_.Polygons(),
-      light_area_);
+      light_areas_);
 }
 
 void MainWindow::InitializeController() {
