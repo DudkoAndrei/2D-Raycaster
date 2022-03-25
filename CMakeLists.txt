@@ -16,6 +16,7 @@ add_executable(Raycaster
         main.cpp
         src/Controller/controller.cpp
         src/MainWindow/main_window.cpp
+        src/PaintWidget/paint_widget.cpp
         src/Polygon/polygon.cpp
         src/Ray/ray.cpp)
 
