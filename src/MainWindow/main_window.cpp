@@ -11,6 +11,12 @@ MainWindow::MainWindow()
   PlaceWidgets();
   ConnectWidgets();
 
+  mode_selector_->addItem("Light");
+  mode_selector_->addItem("Polygons");
+  mode_selector_->setCurrentIndex(1);
+
+  setFixedSize(screen()->availableSize() * 0.8);
+
   setCentralWidget(widget_);
 }
 
