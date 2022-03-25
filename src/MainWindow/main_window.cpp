@@ -22,4 +22,40 @@ void MainWindow::PlaceWidgets() {
 }
 
 void MainWindow::ConnectWidgets() {
+  connect(mode_selector_, &QComboBox::currentIndexChanged, [&](int index) {
+    mode_ = static_cast<Mode>(index);
+
+    points_.clear();
+  });
+
+  connect(paint_widget_, &PaintWidget::MouseLeftClicked, [&](
+      const QPointF& point) {
+    if (mode_ == Mode::kPolygons) {
+      points_.push_back(point);
+    }
+  });
+
+  connect(paint_widget_, &PaintWidget::MouseRightClicked, [&](
+      const QPointF& point) {
+    if (mode_ == Mode::kPolygons) {
+      if (controller_.Polygons().empty()) {
+        InitializeController();
+      }
+      if(!points_.empty()) {
+        controller_.AddPolygon(Polygon(std::move(points_)));
+        points_.clear();
+
+        repaint();
+      }
+    }
+  });
+
+  connect(paint_widget_, &PaintWidget::MouseMoved, [&](const QPointF& point) {
+    if (mode_ == Mode::kLight) {
+      controller_.SetLightSource(point);
+      light_area_ = controller_.CreateLightArea();
+
+      repaint();
+    }
+  });
 }
