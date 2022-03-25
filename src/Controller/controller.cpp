@@ -9,11 +9,26 @@ const std::vector<Polygon>& Controller::Polygons() const {
 }
 
 const QPointF& Controller::LightSource() const {
-  return light_source_;
+  Q_ASSERT(!light_sources_.empty());
+
+  return light_sources_[0];
 }
 
-void Controller::SetLightSource(const QPointF& light_source) {
-  light_source_ = light_source;
+void Controller::SetLightSource(
+    const QPointF& light_source,
+    size_t count,
+    double light_radius) {
+  light_sources_.clear();
+  light_sources_.push_back(light_source);
+
+  Ray temp(light_source, 0);
+
+  double angle = 2.0 * std::numbers::pi / count;
+
+  for (int i = 0; i < count; ++i) {
+    light_sources_.push_back(light_source + temp.Direction() * light_radius);
+    temp = temp.Rotate(angle);
+  }
 }
 
 void Controller::AddPolygon(Polygon polygon) {
@@ -28,46 +43,50 @@ void Controller::UpdateLastPolygon(const QPointF& vertex) {
   polygons_.back().UpdateLastVertex(vertex);
 }
 
-std::vector<Ray> Controller::CastRays() const {
-  std::vector<Ray> result;
+std::vector<std::vector<Ray>> Controller::CastRays() const {
+  std::vector<std::vector<Ray>> result(light_sources_.size());
 
-  for (const auto& polygon : polygons_) {
-    for (size_t i = 0; i < polygon.Size(); ++i) {
-      result.emplace_back(light_source_, polygon[i]);
-      result.push_back(result.back().Rotate(0.0001));
-      result.push_back(result.back().Rotate(-0.0002));
+  for (size_t i = 0; i < light_sources_.size(); ++i) {
+    for (const auto& polygon : polygons_) {
+      for (size_t j = 0; j < polygon.Size(); ++j) {
+        result[i].emplace_back(light_sources_[i], polygon[j]);
+        result[i].push_back(result[i].back().Rotate(0.0001));
+        result[i].push_back(result[i].back().Rotate(-0.0002));
+      }
     }
-  }
 
-  std::sort(result.begin(), result.end());
+    std::sort(result[i].begin(), result[i].end());
+  }
 
   return result;
 }
 
-std::vector<QPointF> Controller::IntersectRays(
-    const std::vector<Ray>& rays) const {
-  std::vector<QPointF> result;
+std::vector<std::vector<QPointF>> Controller::IntersectRays(
+    const std::vector<std::vector<Ray>>& rays) const {
+  std::vector<std::vector<QPointF>> result(rays.size());
 
-  for (const auto& ray : rays) {
-    std::optional<QPointF> temp_point;
-    std::optional<double> temp_point_length;
+  for (size_t i = 0; i < rays.size(); ++i) {
+    for (const auto& ray : rays[i]) {
+      std::optional<QPointF> temp_point;
+      std::optional<double> temp_point_length;
 
-    for (const auto& polygon : polygons_) {
-      auto temp = polygon.IntersectRay(ray);
-      std::optional<double> length;
+      for (const auto& polygon : polygons_) {
+        auto temp = polygon.IntersectRay(ray);
+        std::optional<double> length;
 
-      if (temp.has_value()) {
-        length = GetLineLength(light_source_, temp.value());
+        if (temp.has_value()) {
+          length = GetLineLength(light_sources_[i], temp.value());
 
-        if (!temp_point.has_value() || length < temp_point_length) {
-          temp_point = temp;
-          temp_point_length = length;
+          if (!temp_point.has_value() || length < temp_point_length) {
+            temp_point = temp;
+            temp_point_length = length;
+          }
         }
       }
-    }
 
-    if (temp_point.has_value()) {
-      result.push_back(temp_point.value());
+      if (temp_point.has_value()) {
+        result[i].push_back(temp_point.value());
+      }
     }
   }
 
@@ -79,19 +98,28 @@ double Controller::GetLineLength(const QPointF& a, const QPointF& b) {
       (a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y()));
 }
 
-void Controller::RemoveAdjacentPoints(std::vector<QPointF>* points) {
-  for (int i = points->size() - 1; i > 0; --i) {
-    if (GetLineLength(points->operator[](i), points->operator[](i - 1))
-        < 1e-9) {
-      points->pop_back();
+void Controller::RemoveAdjacentPoints(
+    std::vector<std::vector<QPointF>>* points) {
+  for (int i = 0; i < points->size(); ++i) {
+    for (int j = points->size() - 1; j > 0; --j) {
+      if (GetLineLength(points->operator[](i)[j], points->operator[](i)[j - 1])
+          < 1e-9) {
+        points->pop_back();
+      }
     }
   }
 }
 
-Polygon Controller::CreateLightArea() const {
-  std::vector<QPointF> result = IntersectRays(CastRays());
+std::vector<Polygon> Controller::CreateLightAreas() const {
+  std::vector<Polygon> result;
+  result.reserve(light_sources_.size());
+  std::vector<std::vector<QPointF>> temp = IntersectRays(CastRays());
 
-  RemoveAdjacentPoints(&result);
+  RemoveAdjacentPoints(&temp);
 
-  return Polygon(result);
+  for (auto& points : temp) {
+    result.emplace_back(std::move(points));
+  }
+
+  return result;
 }
