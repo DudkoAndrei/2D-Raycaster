@@ -18,7 +18,7 @@ class PaintWidget : public QWidget {
   void Paint(
       QPainter* painter,
       const std::vector<Polygon>& polygons,
-      const Polygon& light_area_);
+      const std::vector<Polygon>& light_areas);
  signals:
   void MouseMoved(QPointF point);
 

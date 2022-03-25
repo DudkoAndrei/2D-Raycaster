@@ -31,18 +31,27 @@ void PaintWidget::mousePressEvent(QMouseEvent* event) {
 void PaintWidget::Paint(
     QPainter* painter,
     const std::vector<Polygon>& polygons,
-    const Polygon& light_area) {
+    const std::vector<Polygon>& light_areas) {
   painter->save();
 
   painter->translate(pos());
-  painter->fillRect(0, 0, width(), height(), Qt::black);
+  painter->fillRect(0, 0, width(), height(), QColorConstants::Black);
 
-  painter->setPen(Qt::white);
-  painter->setBrush(QBrush(Qt::white, Qt::SolidPattern));
+  if (!light_areas.empty()) {
+    QColor white = QColorConstants::White;
 
-  painter->drawConvexPolygon(light_area.Vertices().data(), light_area.Size());
+    white.setAlphaF(1.0 / light_areas.size());
 
-  painter->setPen(QPen(Qt::gray, 2));
+    painter->setPen(QColorConstants::Transparent);
+    painter->setBrush(QBrush(white, Qt::SolidPattern));
+
+    for (const auto& light_area : light_areas) {
+      painter->drawConvexPolygon(light_area.Vertices().data(),
+                                 light_area.Size());
+    }
+  }
+
+  painter->setPen(QPen(QColorConstants::DarkGray, 2));
   painter->setBrush(QBrush(Qt::NoBrush));
 
   for (const auto& polygon : polygons) {
