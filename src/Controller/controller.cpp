@@ -76,7 +76,7 @@ std::vector<QPointF> Controller::IntersectRays(
 
 double Controller::GetLineLength(const QPointF& a, const QPointF& b) {
   return std::sqrt(
-      (a.x() - b.x()) * (a.x() - b.x()) + (a.x() - b.x()) * (a.x() - b.x()));
+      (a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y()));
 }
 
 void Controller::RemoveAdjacentPoints(std::vector<QPointF>* points) {
