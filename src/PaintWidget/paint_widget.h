@@ -12,17 +12,16 @@ class PaintWidget : public QWidget {
  public:
   explicit PaintWidget(QWidget* parent = nullptr);
 
+  void mouseMoveEvent(QMouseEvent* event) override;
+  void mousePressEvent(QMouseEvent* event) override;
+
   void Paint(
       QPainter* painter,
       const std::vector<Polygon>& polygons,
       const Polygon& light_area_);
-
  signals:
   void MouseMoved(QPointF point);
+
   void MouseLeftClicked(QPointF point);
   void MouseRightClicked(QPointF point);
-
- private:
-  void mouseMoveEvent(QMouseEvent* event) override;
-  void mousePressEvent(QMouseEvent* event) override;
 };
