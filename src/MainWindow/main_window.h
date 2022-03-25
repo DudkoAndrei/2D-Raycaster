@@ -14,9 +14,13 @@ class MainWindow : public QMainWindow {
  public:
   MainWindow();
 
+  void paintEvent(QPaintEvent* event) override;
+
  private:
   void PlaceWidgets();
   void ConnectWidgets();
+
+  void InitializeController();
 
   enum class Mode{
     kLight,

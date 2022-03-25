@@ -41,7 +41,7 @@ void MainWindow::ConnectWidgets() {
       if (controller_.Polygons().empty()) {
         InitializeController();
       }
-      if(!points_.empty()) {
+      if (!points_.empty()) {
         controller_.AddPolygon(Polygon(std::move(points_)));
         points_.clear();
 
@@ -59,3 +59,24 @@ void MainWindow::ConnectWidgets() {
     }
   });
 }
+
+void MainWindow::paintEvent(QPaintEvent* event) {
+  QPainter painter(this);
+
+  paint_widget_->Paint(
+      &painter,
+      controller_.Polygons(),
+      light_area_);
+}
+
+void MainWindow::InitializeController() {
+  double view_width = paint_widget_->width();
+  double view_height = paint_widget_->height();
+
+  std::vector<QPointF> polygon
+      {{0, 0}, {view_width, 0}, {view_width, view_height},
+       {0, view_height}};
+
+  controller_.AddPolygon(Polygon(std::move(polygon)));
+}
+
