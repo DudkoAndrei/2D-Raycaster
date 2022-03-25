@@ -1,13 +1,12 @@
 #pragma once
 
 #include <QComboBox>
-#include <QGraphicsScene>
-#include <QGraphicsView>
 #include <QGridLayout>
 #include <QMainWindow>
-#include <QPixmap>
+#include <vector>
 
 #include "../Controller/controller.h"
+#include "../PaintWidget/paint_widget.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -31,10 +30,10 @@ class MainWindow : public QMainWindow {
 
   QComboBox* mode_selector_;
 
-  QPixmap pixmap_{800, 600};
+  PaintWidget* paint_widget_;
 
-  QGraphicsScene* scene_;
-  QGraphicsView* view_;
+  std::vector<QPointF> points_;
+  Polygon light_area_;
 
   Controller controller_;
 };
