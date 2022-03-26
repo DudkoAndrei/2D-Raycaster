@@ -53,7 +53,7 @@ void MainWindow::ConnectWidgets() {
         light_areas_ = controller_.CreateLightAreas();
 
         controller_.SetLightSource(controller_.LightSource());
-        
+
         repaint();
         break;
       }
