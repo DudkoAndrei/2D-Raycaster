@@ -17,6 +17,8 @@ class Controller {
       size_t count = 10,
       double light_radius = 1.0);
 
+  void AddStaticLightSource(const QPointF& light_source);
+
   void AddPolygon(Polygon polygon);
   void AddVertexToLastPolygon(const QPointF& vertex);
   void UpdateLastPolygon(const QPointF& vertex);
@@ -33,4 +35,5 @@ class Controller {
 
   std::vector<Polygon> polygons_;
   std::vector<QPointF> light_sources_;
+  std::vector<QPointF> static_light_sources_;
 };

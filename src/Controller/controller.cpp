@@ -11,14 +11,14 @@ const std::vector<Polygon>& Controller::Polygons() const {
 const QPointF& Controller::LightSource() const {
   Q_ASSERT(!light_sources_.empty());
 
-  return light_sources_[0];
+  return light_sources_[static_light_sources_.size()];
 }
 
 void Controller::SetLightSource(
     const QPointF& light_source,
     size_t count,
     double light_radius) {
-  light_sources_.clear();
+  light_sources_ = static_light_sources_;
   light_sources_.push_back(light_source);
 
   Ray temp(light_source, 0);
@@ -101,10 +101,10 @@ double Controller::GetLineLength(const QPointF& a, const QPointF& b) {
 void Controller::RemoveAdjacentPoints(
     std::vector<std::vector<QPointF>>* points) {
   for (int i = 0; i < points->size(); ++i) {
-    for (int j = points->size() - 1; j > 0; --j) {
+    for (int j = points[i].size() - 1; j > 0; --j) {
       if (GetLineLength(points->operator[](i)[j], points->operator[](i)[j - 1])
           < 1e-9) {
-        points->pop_back();
+        points->operator[](i).pop_back();
       }
     }
   }
@@ -122,4 +122,8 @@ std::vector<Polygon> Controller::CreateLightAreas() const {
   }
 
   return result;
+}
+
+void Controller::AddStaticLightSource(const QPointF& light_source) {
+  static_light_sources_.push_back(light_source);
 }
