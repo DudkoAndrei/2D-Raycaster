@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+#include <QSize>
 #include <vector>
 
 #include "../Polygon/polygon.h"
@@ -12,21 +14,25 @@ class Controller {
   const std::vector<Polygon>& Polygons() const;
 
   const QPointF& LightSource() const;
-  void SetLightSource(
-      const QPointF& light_source,
-      size_t count = 10,
-      double light_radius = 1.0);
+  void SetLightSource(const QPointF& light_source);
 
-  void AddStaticLightSource(
-      const QPointF& light_source,
-      size_t count = 10,
-      double light_radius = 1.0);
+  void AddStaticLightSource(const QPointF& light_source);
 
   void AddPolygon(Polygon polygon);
   void AddVertexToLastPolygon(const QPointF& vertex);
   void UpdateLastPolygon(const QPointF& vertex);
 
-  std::vector<Polygon> CreateLightAreas() const;
+  void UpdateLightAreas();
+
+  const std::vector<Polygon>& LightAreas() const;
+
+  size_t FuzzyPointsCount() const;
+  void SetFuzzyPointsCount(size_t count);
+
+  double LightSourceRadius() const;
+  void SetLightSourceRadius(double radius);
+
+  void SetBounds(const QSize& size);
 
  private:
   std::vector<std::vector<Ray>> CastRays() const;
@@ -35,13 +41,18 @@ class Controller {
   static void RemoveAdjacentPoints(std::vector<std::vector<QPointF>>* points);
 
   void AddFuzzyLightSource(
-      const QPointF& source,
-      size_t count,
-      double light_radius);
+      const QPointF& source);
 
   static double GetLineLength(const QPointF& a, const QPointF& b);
 
+  std::optional<QPointF> light_source_;
+
   std::vector<Polygon> polygons_;
-  std::vector<QPointF> light_sources_;
+  std::vector<QPointF> fuzzy_light_sources_;
   std::vector<QPointF> static_light_sources_;
+
+  std::vector<Polygon> light_areas_;
+
+  size_t fuzzy_points_count_{10};
+  double light_source_radius_{1};
 };
