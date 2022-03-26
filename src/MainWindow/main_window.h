@@ -20,8 +20,6 @@ class MainWindow : public QMainWindow {
   void PlaceWidgets();
   void ConnectWidgets();
 
-  void InitializeController();
-
   enum class Mode{
     kPolygons,
     kLight,

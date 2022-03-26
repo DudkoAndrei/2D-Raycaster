@@ -180,7 +180,7 @@ void Controller::SetBounds(const QSize& size) {
   double width = size.width();
   double height = size.height();
 
-  Polygon bounds({{0, 0},{width, 0}, {width, height},{0, height}});
+  Polygon bounds({{0, 0}, {width, 0}, {width, height},{0, height}});
 
   if (polygons_.empty()) {
     AddPolygon(bounds);

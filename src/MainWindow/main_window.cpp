@@ -1,7 +1,6 @@
 #include "main_window.h"
 
 #include <QPainter>
-#include <utility>
 
 MainWindow::MainWindow()
     : widget_(new QWidget(this)),
@@ -36,21 +35,13 @@ void MainWindow::ConnectWidgets() {
       const QPointF& point) {
     switch (mode_) {
       case Mode::kPolygons: {
-        if (controller_.Polygons().empty()) {
-          InitializeController();
-          controller_.AddPolygon({});
-        }
-
         controller_.AddVertexToLastPolygon(point);
-        light_areas_ = controller_.CreateLightAreas();
 
         repaint();
         break;
       }
       case Mode::kStaticLight: {
         controller_.AddStaticLightSource(point);
-
-        light_areas_ = controller_.CreateLightAreas();
 
         controller_.SetLightSource(controller_.LightSource());
 
@@ -64,21 +55,13 @@ void MainWindow::ConnectWidgets() {
   connect(paint_widget_, &PaintWidget::MouseRightClicked, [&](
       const QPointF& point) {
     if (mode_ == Mode::kPolygons) {
-      if (controller_.Polygons().empty()) {
-        InitializeController();
-      }
       controller_.AddPolygon({});
     }
   });
 
   connect(paint_widget_, &PaintWidget::MouseMoved, [&](const QPointF& point) {
-    if (controller_.Polygons().empty()) {
-      InitializeController();
-      controller_.AddPolygon({});
-    }
     if (mode_ == Mode::kLight) {
       controller_.SetLightSource(point);
-      light_areas_ = controller_.CreateLightAreas();
 
       repaint();
     }
@@ -86,22 +69,13 @@ void MainWindow::ConnectWidgets() {
 }
 
 void MainWindow::paintEvent(QPaintEvent* event) {
+  controller_.SetBounds(paint_widget_->size());
+
   QPainter painter(this);
 
   paint_widget_->Paint(
       &painter,
       controller_.Polygons(),
-      light_areas_);
+      controller_.LightAreas(),
+      controller_.FuzzyPointsCount());
 }
-
-void MainWindow::InitializeController() {
-  double view_width = paint_widget_->width();
-  double view_height = paint_widget_->height();
-
-  std::vector<QPointF> polygon
-      {{0, 0}, {view_width, 0}, {view_width, view_height},
-       {0, view_height}};
-
-  controller_.AddPolygon(Polygon(std::move(polygon)));
-}
-
