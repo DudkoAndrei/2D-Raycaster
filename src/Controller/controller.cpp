@@ -9,41 +9,43 @@ const std::vector<Polygon>& Controller::Polygons() const {
 }
 
 const QPointF& Controller::LightSource() const {
-  Q_ASSERT(!light_sources_.empty());
+  Q_ASSERT(light_source_.has_value());
 
-  return light_sources_[0];
+  return light_source_.value();
 }
 
 void Controller::SetLightSource(
-    const QPointF& light_source,
-    size_t count,
-    double light_radius) {
-  light_sources_.clear();
-  AddFuzzyLightSource(light_source, count, light_radius);
-  for (const auto& source : static_light_sources_) {
-    AddFuzzyLightSource(source, count, light_radius);
-  }
+    const QPointF& light_source) {
+  light_source_ = light_source;
+
+  UpdateLightAreas();
 }
 
 void Controller::AddPolygon(Polygon polygon) {
   polygons_.push_back(std::move(polygon));
+
+  UpdateLightAreas();
 }
 
 void Controller::AddVertexToLastPolygon(const QPointF& vertex) {
   polygons_.back().AddVertex(vertex);
+
+  UpdateLightAreas();
 }
 
 void Controller::UpdateLastPolygon(const QPointF& vertex) {
   polygons_.back().UpdateLastVertex(vertex);
+
+  UpdateLightAreas();
 }
 
 std::vector<std::vector<Ray>> Controller::CastRays() const {
-  std::vector<std::vector<Ray>> result(light_sources_.size());
+  std::vector<std::vector<Ray>> result(fuzzy_light_sources_.size());
 
-  for (size_t i = 0; i < light_sources_.size(); ++i) {
+  for (size_t i = 0; i < fuzzy_light_sources_.size(); ++i) {
     for (const auto& polygon : polygons_) {
       for (size_t j = 0; j < polygon.Size(); ++j) {
-        result[i].emplace_back(light_sources_[i], polygon[j]);
+        result[i].emplace_back(fuzzy_light_sources_[i], polygon[j]);
         result[i].push_back(result[i].back().Rotate(0.0001));
         result[i].push_back(result[i].back().Rotate(-0.0002));
       }
@@ -69,7 +71,7 @@ std::vector<std::vector<QPointF>> Controller::IntersectRays(
         std::optional<double> length;
 
         if (temp.has_value()) {
-          length = GetLineLength(light_sources_[i], temp.value());
+          length = GetLineLength(fuzzy_light_sources_[i], temp.value());
 
           if (!temp_point.has_value() || length < temp_point_length) {
             temp_point = temp;
@@ -106,40 +108,86 @@ void Controller::RemoveAdjacentPoints(
   }
 }
 
-std::vector<Polygon> Controller::CreateLightAreas() const {
-  std::vector<Polygon> result;
-  result.reserve(light_sources_.size());
+void Controller::UpdateLightAreas() {
+  fuzzy_light_sources_.clear();
+
+  if (light_source_.has_value()) {
+    AddFuzzyLightSource(light_source_.value());
+  }
+
+  for (const auto& light_source : static_light_sources_) {
+    AddFuzzyLightSource(light_source);
+  }
+
+  light_areas_.clear();
+  light_areas_.reserve(fuzzy_light_sources_.size());
   std::vector<std::vector<QPointF>> temp = IntersectRays(CastRays());
 
   RemoveAdjacentPoints(&temp);
 
   for (auto& points : temp) {
-    result.emplace_back(std::move(points));
+    light_areas_.emplace_back(std::move(points));
   }
-
-  return result;
 }
 
 void Controller::AddStaticLightSource(
-    const QPointF& light_source,
-    size_t count,
-    double light_radius) {
+    const QPointF& light_source) {
   static_light_sources_.push_back(light_source);
-  AddFuzzyLightSource(light_source, count, light_radius);
+
+  UpdateLightAreas();
 }
 
 void Controller::AddFuzzyLightSource(
-    const QPointF& source,
-    size_t count,
-    double light_radius) {
-  light_sources_.push_back(source);
+    const QPointF& source) {
+  fuzzy_light_sources_.push_back(source);
 
   Ray temp(source, 0);
 
-  double angle = 2.0 * std::numbers::pi / count;
+  double angle = 2.0 * std::numbers::pi / fuzzy_points_count_;
 
-  for (int i = 0; i < count; ++i) {
-    light_sources_.push_back(source + temp.Direction() * light_radius);
+  for (int i = 0; i < fuzzy_points_count_; ++i) {
+    fuzzy_light_sources_.push_back(
+        source + temp.Direction() * light_source_radius_);
     temp = temp.Rotate(angle);
   }
+}
+
+size_t Controller::FuzzyPointsCount() const {
+  return fuzzy_points_count_;
+}
+
+void Controller::SetFuzzyPointsCount(size_t count) {
+  fuzzy_points_count_ = count;
+
+  UpdateLightAreas();
+}
+
+double Controller::LightSourceRadius() const {
+  return light_source_radius_;
+}
+
+void Controller::SetLightSourceRadius(double radius) {
+  light_source_radius_ = radius;
+
+  UpdateLightAreas();
+}
+
+const std::vector<Polygon>& Controller::LightAreas() const {
+  return light_areas_;
+}
+
+void Controller::SetBounds(const QSize& size) {
+  double width = size.width();
+  double height = size.height();
+
+  Polygon bounds({{0, 0},{width, 0}, {width, height},{0, height}});
+
+  if (polygons_.empty()) {
+    AddPolygon(bounds);
+    polygons_.emplace_back();
+  } else {
+    polygons_[0] = bounds;
+  }
+
+  UpdateLightAreas();
 }
