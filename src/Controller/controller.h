@@ -31,6 +31,11 @@ class Controller {
       const std::vector<std::vector<Ray>>& rays) const;
   static void RemoveAdjacentPoints(std::vector<std::vector<QPointF>>* points);
 
+  void AddFuzzyLightSource(
+      const QPointF& source,
+      size_t count,
+      double light_radius);
+
   static double GetLineLength(const QPointF& a, const QPointF& b);
 
   std::vector<Polygon> polygons_;

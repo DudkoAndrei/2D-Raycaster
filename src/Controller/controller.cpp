@@ -11,7 +11,7 @@ const std::vector<Polygon>& Controller::Polygons() const {
 const QPointF& Controller::LightSource() const {
   Q_ASSERT(!light_sources_.empty());
 
-  return light_sources_[static_light_sources_.size()];
+  return light_sources_[0];
 }
 
 void Controller::SetLightSource(
@@ -128,4 +128,20 @@ std::vector<Polygon> Controller::CreateLightAreas() const {
 
 void Controller::AddStaticLightSource(const QPointF& light_source) {
   static_light_sources_.push_back(light_source);
+}
+
+void Controller::AddFuzzyLightSource(
+    const QPointF& source,
+    size_t count,
+    double light_radius) {
+  light_sources_.push_back(source);
+
+  Ray temp(source, 0);
+
+  double angle = 2.0 * std::numbers::pi / count;
+
+  for (int i = 0; i < count; ++i) {
+    light_sources_.push_back(source + temp.Direction() * light_radius);
+    temp = temp.Rotate(angle);
+  }
 }
