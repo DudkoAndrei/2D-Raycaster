@@ -24,7 +24,8 @@ class MainWindow : public QMainWindow {
 
   enum class Mode{
     kPolygons,
-    kLight
+    kLight,
+    kStaticLight
   };
 
   Mode mode_;
