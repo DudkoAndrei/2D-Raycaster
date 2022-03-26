@@ -17,6 +17,11 @@ class Controller {
       size_t count = 10,
       double light_radius = 1.0);
 
+  void AddStaticLightSource(
+      const QPointF& light_source,
+      size_t count = 10,
+      double light_radius = 1.0);
+
   void AddPolygon(Polygon polygon);
   void AddVertexToLastPolygon(const QPointF& vertex);
   void UpdateLastPolygon(const QPointF& vertex);
@@ -29,8 +34,14 @@ class Controller {
       const std::vector<std::vector<Ray>>& rays) const;
   static void RemoveAdjacentPoints(std::vector<std::vector<QPointF>>* points);
 
+  void AddFuzzyLightSource(
+      const QPointF& source,
+      size_t count,
+      double light_radius);
+
   static double GetLineLength(const QPointF& a, const QPointF& b);
 
   std::vector<Polygon> polygons_;
   std::vector<QPointF> light_sources_;
+  std::vector<QPointF> static_light_sources_;
 };

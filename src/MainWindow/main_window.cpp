@@ -13,6 +13,7 @@ MainWindow::MainWindow()
 
   mode_selector_->addItem("Polygons");
   mode_selector_->addItem("Light");
+  mode_selector_->addItem("Static Light");
 
   setFixedSize(screen()->availableSize() * 0.8);
 
@@ -33,15 +34,30 @@ void MainWindow::ConnectWidgets() {
 
   connect(paint_widget_, &PaintWidget::MouseLeftClicked, [&](
       const QPointF& point) {
-    if (mode_ == Mode::kPolygons) {
-      if (controller_.Polygons().empty()) {
-        InitializeController();
-        controller_.AddPolygon({});
-      }
-      controller_.AddVertexToLastPolygon(point);
-      light_areas_ = controller_.CreateLightAreas();
+    switch (mode_) {
+      case Mode::kPolygons: {
+        if (controller_.Polygons().empty()) {
+          InitializeController();
+          controller_.AddPolygon({});
+        }
 
-      repaint();
+        controller_.AddVertexToLastPolygon(point);
+        light_areas_ = controller_.CreateLightAreas();
+
+        repaint();
+        break;
+      }
+      case Mode::kStaticLight: {
+        controller_.AddStaticLightSource(point);
+
+        light_areas_ = controller_.CreateLightAreas();
+
+        controller_.SetLightSource(controller_.LightSource());
+
+        repaint();
+        break;
+      }
+      default: {}
     }
   });
 

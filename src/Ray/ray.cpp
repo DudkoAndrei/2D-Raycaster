@@ -9,14 +9,7 @@ Ray::Ray(const QPointF& begin, const QPointF& end)
       direction_(GetDirection(angle_)) {}
 
 Ray::Ray(const QPointF& begin, double angle)
-    : angle_(angle), begin_(begin), direction_(GetDirection(angle)) {
-  while (angle_ < 0) {
-    angle += 2.0 * std::numbers::pi;
-  }
-  while (angle >= 2.0 * std::numbers::pi) {
-    angle -= 2.0 * std::numbers::pi;
-  }
-}
+    : angle_(angle), begin_(begin), direction_(GetDirection(angle)) {}
 
 double Ray::GetAngle(const QPointF& point) {
   double angle;
