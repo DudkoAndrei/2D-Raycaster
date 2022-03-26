@@ -17,7 +17,10 @@ class Controller {
       size_t count = 10,
       double light_radius = 1.0);
 
-  void AddStaticLightSource(const QPointF& light_source);
+  void AddStaticLightSource(
+      const QPointF& light_source,
+      size_t count = 10,
+      double light_radius = 1.0);
 
   void AddPolygon(Polygon polygon);
   void AddVertexToLastPolygon(const QPointF& vertex);
