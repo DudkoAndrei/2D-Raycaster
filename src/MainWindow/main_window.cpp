@@ -24,8 +24,8 @@ MainWindow::MainWindow()
 
 void MainWindow::PlaceWidgets() {
   layout_->addWidget(paint_widget_, 0, 0, 1, 2);
-  layout_->addWidget(mode_selector_, 1, 0, 1, 1);
-  layout_->addWidget(button_, 1, 1, 1, 1);
+  layout_->addWidget(mode_selector_, 1, 0);
+  layout_->addWidget(button_, 1, 1);
 
   widget_->setLayout(layout_);
 }
@@ -72,7 +72,9 @@ void MainWindow::ConnectWidgets() {
   connect(button_, &QPushButton::clicked, [&](){
     AreaSettingsDialog dialog(this, settings_);
     dialog.exec();
+
     settings_ = dialog.Settings();
+
     controller_.SetFuzzyPointsCount(settings_.fuzzy_points_count);
     controller_.SetLightSourceRadius(settings_.light_source_radius);
   });

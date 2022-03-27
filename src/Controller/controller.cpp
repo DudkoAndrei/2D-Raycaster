@@ -32,12 +32,16 @@ void Controller::AddPolygon(Polygon polygon) {
 }
 
 void Controller::AddVertexToLastPolygon(const QPointF& vertex) {
+  Q_ASSERT(!polygons_.empty());
+
   polygons_.back().AddVertex(vertex);
 
   UpdateLightAreas();
 }
 
 void Controller::UpdateLastPolygon(const QPointF& vertex) {
+  Q_ASSERT(!polygons_.empty());
+
   polygons_.back().UpdateLastVertex(vertex);
 
   UpdateLightAreas();
@@ -100,11 +104,10 @@ double Controller::GetLineLength(const QPointF& a, const QPointF& b) {
 
 void Controller::RemoveAdjacentPoints(
     std::vector<std::vector<QPointF>>* points) {
-  for (size_t i = 0; i < points->size(); ++i) {
-    for (size_t j = 0; j < (*points)[i].size() - 1 && !(*points)[i].empty();
-         ++j) {
-      if (GetLineLength((*points)[i][j], (*points)[i][j - 1]) < 1e-9) {
-        (*points)[i].erase((*points)[i].begin() + j);
+  for (auto& point : *points) {
+    for (size_t j = 0; j < point.size() - 1 && !point.empty(); ++j) {
+      if (GetLineLength(point[j], point[j - 1]) < 1e-9) {
+        point.erase(point.begin() + j);
         --j;
       }
     }

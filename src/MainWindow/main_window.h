@@ -28,7 +28,7 @@ class MainWindow : public QMainWindow {
     kStaticLight
   };
 
-  Mode mode_;
+  Mode mode_ = Mode::kPolygons;
 
   QWidget* widget_;
   QGridLayout* layout_;
