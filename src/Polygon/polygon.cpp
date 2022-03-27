@@ -26,6 +26,8 @@ void Polygon::AddVertex(const QPointF& vertex) {
 }
 
 void Polygon::UpdateLastVertex(const QPointF& vertex) {
+  Q_ASSERT(!vertices_.empty());
+
   vertices_.back() = vertex;
 }
 
@@ -51,33 +53,34 @@ std::optional<std::pair<QPointF, double>> Polygon::GetIntersection(
     const QPointF& line_end) {
   QPointF line_direction = line_end - line_begin;
 
-  if (IsParallel(ray.Direction(), line_direction)) {
+  if (AreParallel(ray.Direction(), line_direction)) {
     return std::nullopt;
   }
 
-  // intersection_point = ray.Begin + ray.Direction() * T1
-  // intersection_point = line_begin + line_direction * T2
+  // intersection_point = ray.Begin + ray.Direction() * intersected_length
+  // intersection_point = line_begin + line_direction * ray_length
 
-  double t2 = (ray.Direction().x() * (line_begin.y() - ray.Begin().y())
-      + ray.Direction().y() * (ray.Begin().x() - line_begin.x()))
-      / (line_direction.x() * ray.Direction().y()
-          - line_direction.y() * ray.Direction().x());
+  double intersected_length =
+      (ray.Direction().x() * (line_begin.y() - ray.Begin().y())
+          + ray.Direction().y() * (ray.Begin().x() - line_begin.x()))
+          / (line_direction.x() * ray.Direction().y()
+              - line_direction.y() * ray.Direction().x());
 
-  double t1 =
-      (line_begin.x() + line_direction.x() * t2 - ray.Begin().x())
-          / ray.Direction().x();
+  double ray_length = (line_begin.x() + line_direction.x() * intersected_length
+      - ray.Begin().x()) / ray.Direction().x();
 
   double kEps = 1e-9;
 
-  if (t1 < -kEps || t2 < -kEps || t2 > 1.0 + kEps) {
+  if (ray_length < -kEps || intersected_length < -kEps
+      || intersected_length > 1.0 + kEps) {
     return std::nullopt;
   }
 
-  return std::make_pair(ray.Begin() + ray.Direction() * t1, t1);
+  return std::make_pair(ray.Begin() + ray.Direction() * ray_length, ray_length);
 }
 
-bool Polygon::IsParallel(const QPointF& first_direction,
-                         const QPointF& second_direction) {
-  return first_direction.x() * second_direction.y()
-      - second_direction.x() * first_direction.y() == 0;
+bool Polygon::AreParallel(const QPointF& first_direction,
+                          const QPointF& second_direction) {
+  return std::fabs(first_direction.x() * second_direction.y()
+                       - second_direction.x() * first_direction.y()) < 1e-9;
 }

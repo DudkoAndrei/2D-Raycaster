@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <QSize>
 #include <vector>
 
 #include "../Polygon/polygon.h"
@@ -12,9 +11,11 @@ class Controller {
   Controller() = default;
 
   const std::vector<Polygon>& Polygons() const;
+  bool HasPolygons() const;
 
   const QPointF& LightSource() const;
   void SetLightSource(const QPointF& light_source);
+  bool HasLightSource() const;
 
   void AddStaticLightSource(const QPointF& light_source);
 
@@ -32,7 +33,9 @@ class Controller {
   double LightSourceRadius() const;
   void SetLightSourceRadius(double radius);
 
-  void SetBounds(const QSize& size);
+  void SetBounds(double width, double height);
+
+  const std::vector<QPointF> StaticLightSources() const;
 
  private:
   std::vector<std::vector<Ray>> CastRays() const;

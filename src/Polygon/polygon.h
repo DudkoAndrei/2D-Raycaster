@@ -27,7 +27,7 @@ class Polygon {
       const Ray& ray,
       const QPointF& line_begin,
       const QPointF& line_end);
-  static bool IsParallel(
+  static bool AreParallel(
       const QPointF& first_direction,
       const QPointF& second_direction);
 

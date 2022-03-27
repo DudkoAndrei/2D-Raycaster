@@ -2,10 +2,13 @@
 
 #include <QPainter>
 
+#include "../AreaSettingsDialog/area_settings_dialog.h"
+
 MainWindow::MainWindow()
     : widget_(new QWidget(this)),
       layout_(new QGridLayout(widget_)),
       mode_selector_(new QComboBox(widget_)),
+      button_ (new QPushButton("Settings", widget_)),
       paint_widget_(new PaintWidget(widget_)) {
   PlaceWidgets();
   ConnectWidgets();
@@ -21,7 +24,8 @@ MainWindow::MainWindow()
 
 void MainWindow::PlaceWidgets() {
   layout_->addWidget(paint_widget_, 0, 0, 1, 2);
-  layout_->addWidget(mode_selector_, 1, 0, 1, 1);
+  layout_->addWidget(mode_selector_, 1, 0);
+  layout_->addWidget(button_, 1, 1);
 
   widget_->setLayout(layout_);
 }
@@ -42,8 +46,6 @@ void MainWindow::ConnectWidgets() {
       }
       case Mode::kStaticLight: {
         controller_.AddStaticLightSource(point);
-
-        controller_.SetLightSource(controller_.LightSource());
 
         repaint();
         break;
@@ -66,10 +68,23 @@ void MainWindow::ConnectWidgets() {
       repaint();
     }
   });
+
+  connect(button_, &QPushButton::clicked, [&](){
+    AreaSettingsDialog dialog(this, settings_);
+    dialog.exec();
+
+    settings_ = dialog.Settings();
+
+    controller_.SetFuzzyPointsCount(settings_.fuzzy_points_count);
+    controller_.SetLightSourceRadius(settings_.light_source_radius);
+  });
 }
 
 void MainWindow::paintEvent(QPaintEvent* event) {
-  controller_.SetBounds(paint_widget_->size());
+  if (!controller_.HasPolygons()) {
+    controller_.SetBounds(paint_widget_->size().width(),
+                          paint_widget_->size().height());
+  }
 
   QPainter painter(this);
 
@@ -77,5 +92,7 @@ void MainWindow::paintEvent(QPaintEvent* event) {
       &painter,
       controller_.Polygons(),
       controller_.LightAreas(),
-      controller_.FuzzyPointsCount());
+      controller_.StaticLightSources(),
+      settings_,
+      controller_.HasLightSource());
 }

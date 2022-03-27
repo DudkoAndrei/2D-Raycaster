@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <vector>
 
+#include "../AreaSettingsDialog/area_settings.h"
 #include "../Polygon/polygon.h"
 
 class PaintWidget : public QWidget {
@@ -19,7 +20,9 @@ class PaintWidget : public QWidget {
       QPainter* painter,
       const std::vector<Polygon>& polygons,
       const std::vector<Polygon>& light_areas,
-      size_t count);
+      const std::vector<QPointF>& static_points,
+      const AreaSettings& settings,
+      bool has_nonstatic_light);
  signals:
   void MouseMoved(QPointF point);
 
