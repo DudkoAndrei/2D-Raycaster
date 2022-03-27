@@ -79,7 +79,9 @@ void MainWindow::ConnectWidgets() {
 }
 
 void MainWindow::paintEvent(QPaintEvent* event) {
-  controller_.SetBounds(paint_widget_->size());
+  if (!controller_.HasPolygons()) {
+    controller_.SetBounds(paint_widget_->size());
+  }
 
   QPainter painter(this);
 
@@ -87,5 +89,7 @@ void MainWindow::paintEvent(QPaintEvent* event) {
       &painter,
       controller_.Polygons(),
       controller_.LightAreas(),
-      controller_.FuzzyPointsCount());
+      controller_.StaticLightSources(),
+      settings_,
+      controller_.HasLightSource());
 }
