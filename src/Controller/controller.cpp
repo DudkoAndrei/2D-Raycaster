@@ -14,6 +14,10 @@ const QPointF& Controller::LightSource() const {
   return light_source_.value();
 }
 
+bool Controller::HasLightSource() const {
+  return light_source_.has_value();
+}
+
 void Controller::SetLightSource(
     const QPointF& light_source) {
   light_source_ = light_source;
@@ -190,4 +194,8 @@ void Controller::SetBounds(const QSize& size) {
   }
 
   UpdateLightAreas();
+}
+
+bool Controller::HasPolygons() const {
+  return !polygons_.empty();
 }

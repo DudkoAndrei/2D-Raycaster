@@ -12,9 +12,11 @@ class Controller {
   Controller() = default;
 
   const std::vector<Polygon>& Polygons() const;
+  bool HasPolygons() const;
 
   const QPointF& LightSource() const;
   void SetLightSource(const QPointF& light_source);
+  bool HasLightSource() const;
 
   void AddStaticLightSource(const QPointF& light_source);
 
