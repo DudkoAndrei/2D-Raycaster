@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <QSize>
 #include <vector>
 
 #include "../Polygon/polygon.h"
@@ -34,7 +33,7 @@ class Controller {
   double LightSourceRadius() const;
   void SetLightSourceRadius(double radius);
 
-  void SetBounds(const QSize& size);
+  void SetBounds(double width, double height);
 
   const std::vector<QPointF> StaticLightSources() const;
 

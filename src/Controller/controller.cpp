@@ -179,10 +179,7 @@ const std::vector<Polygon>& Controller::LightAreas() const {
   return light_areas_;
 }
 
-void Controller::SetBounds(const QSize& size) {
-  double width = size.width();
-  double height = size.height();
-
+void Controller::SetBounds(double width, double height) {
   Polygon bounds({{0, 0}, {width, 0}, {width, height}, {0, height}});
 
   if (polygons_.empty()) {

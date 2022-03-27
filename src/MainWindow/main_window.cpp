@@ -80,7 +80,8 @@ void MainWindow::ConnectWidgets() {
 
 void MainWindow::paintEvent(QPaintEvent* event) {
   if (!controller_.HasPolygons()) {
-    controller_.SetBounds(paint_widget_->size());
+    controller_.SetBounds(paint_widget_->size().width(),
+                          paint_widget_->size().height());
   }
 
   QPainter painter(this);
