@@ -199,3 +199,7 @@ void Controller::SetBounds(const QSize& size) {
 bool Controller::HasPolygons() const {
   return !polygons_.empty();
 }
+
+const std::vector<QPointF> Controller::StaticLightSources() const {
+  return static_light_sources_;
+}

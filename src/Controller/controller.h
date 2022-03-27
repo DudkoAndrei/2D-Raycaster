@@ -36,6 +36,8 @@ class Controller {
 
   void SetBounds(const QSize& size);
 
+  const std::vector<QPointF> StaticLightSources() const;
+
  private:
   std::vector<std::vector<Ray>> CastRays() const;
   std::vector<std::vector<QPointF>> IntersectRays(
