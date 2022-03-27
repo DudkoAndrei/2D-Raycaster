@@ -3,8 +3,10 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QMainWindow>
+#include <QPushButton>
 #include <vector>
 
+#include "../AreaSettingsDialog/area_settings.h"
 #include "../Controller/controller.h"
 #include "../PaintWidget/paint_widget.h"
 
@@ -35,7 +37,11 @@ class MainWindow : public QMainWindow {
 
   PaintWidget* paint_widget_;
 
+  QPushButton* button_;
+
   std::vector<Polygon> light_areas_;
 
   Controller controller_;
+
+  AreaSettings settings_;
 };
