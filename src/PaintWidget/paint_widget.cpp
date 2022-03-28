@@ -52,14 +52,16 @@ void PaintWidget::Paint(
     static_color.setAlphaF(alpha_value);
 
     painter->setPen(QColorConstants::Transparent);
+
     if (has_nonstatic_light) {
       painter->setBrush(QBrush(main_color.toExtendedRgb(), Qt::SolidPattern));
     } else {
       painter->setBrush(QBrush(static_color.toExtendedRgb(), Qt::SolidPattern));
     }
+
     for (size_t i = 0; i < light_areas.size(); ++i) {
-      painter->drawConvexPolygon(light_areas[i].Vertices().data(),
-                                 light_areas[i].Size());
+      painter->drawPolygon(light_areas[i].Vertices().data(),
+                           light_areas[i].Size());
 
       if (i == settings.fuzzy_points_count) {
         painter->setBrush(QBrush(static_color.toExtendedRgb(),
@@ -69,8 +71,8 @@ void PaintWidget::Paint(
   }
 
   painter->setPen(QPen(settings.polygons_color, 2));
-
   painter->setBrush(settings.static_light_color);
+
   for (const auto& point : static_points) {
     painter->drawEllipse(point, 5, 5);
   }
@@ -78,7 +80,7 @@ void PaintWidget::Paint(
   painter->setBrush(QBrush(Qt::NoBrush));
 
   for (const auto& polygon : polygons) {
-    painter->drawConvexPolygon(polygon.Vertices().data(), polygon.Size());
+    painter->drawPolygon(polygon.Vertices().data(), polygon.Size());
   }
 
   painter->restore();
